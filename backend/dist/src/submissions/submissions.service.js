@@ -98,7 +98,7 @@ let SubmissionsService = SubmissionsService_1 = class SubmissionsService {
             };
         }
         catch (error) {
-            this.logger.error(`Error generating PDF for submission ${submission.id}: ${error.message}`, error.stack);
+            this.logger.error(`Error generating PDF for submission ${submission.id}: ${error?.message || error}`, error?.stack);
             await this.prisma.submission.update({
                 where: { id: submission.id },
                 data: { status: 'FAILED' },

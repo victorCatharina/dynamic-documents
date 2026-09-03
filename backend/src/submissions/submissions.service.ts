@@ -118,10 +118,10 @@ export class SubmissionsService {
         status: 'GENERATED',
         documentUrl: `/api/v1/submissions/${submission.id}/document`,
       };
-    } catch (error) {
+    } catch (error: any) {
       this.logger.error(
-        `Error generating PDF for submission ${submission.id}: ${error.message}`,
-        error.stack,
+        `Error generating PDF for submission ${submission.id}: ${error?.message || error}`,
+        error?.stack,
       );
       await this.prisma.submission.update({
         where: { id: submission.id },

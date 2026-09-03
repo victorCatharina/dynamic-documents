@@ -5,44 +5,44 @@ export declare class CustomFieldsController {
     private readonly customFieldsService;
     constructor(customFieldsService: CustomFieldsService);
     create(createDto: CreateCustomFieldDto): Promise<{
+        formatting: string | null;
+        type: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        formatting: string | null;
-        type: string;
         key: string;
         label: string;
         inputMode: string;
         validation: string | null;
     }>;
     findAll(): Promise<{
+        formatting: string | null;
+        type: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        formatting: string | null;
-        type: string;
         key: string;
         label: string;
         inputMode: string;
         validation: string | null;
     }[]>;
     findById(id: string): Promise<{
+        formatting: string | null;
+        type: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        formatting: string | null;
-        type: string;
         key: string;
         label: string;
         inputMode: string;
         validation: string | null;
     }>;
     update(id: string, updateDto: UpdateCustomFieldDto): Promise<{
+        formatting: string | null;
+        type: string;
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        formatting: string | null;
-        type: string;
         key: string;
         label: string;
         inputMode: string;

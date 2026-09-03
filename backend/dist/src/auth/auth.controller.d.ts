@@ -6,8 +6,8 @@ export declare class AuthController {
     constructor(authService: AuthService);
     login(loginDto: LoginDto): Promise<AuthResponseDto>;
     getProfile(userId: string): Promise<{
-        id: string;
         email: string;
+        id: string;
         name: string;
         role: string;
         createdAt: Date;

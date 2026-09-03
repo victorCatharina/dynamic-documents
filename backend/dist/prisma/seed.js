@@ -1,10 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const client_1 = require("@prisma/client");
 const bcrypt = require("bcrypt");
-const prisma = new client_1.PrismaClient();
+const isTest = process.argv.includes('--schema=prisma/schema.test.prisma') ||
+    process.env.USE_TEST_DB === 'true' ||
+    process.env.NODE_ENV === 'test';
+let PrismaClientClass;
+if (isTest) {
+    try {
+        PrismaClientClass = require('../src/generated/prisma-test').PrismaClient;
+    }
+    catch {
+        PrismaClientClass = require('@prisma/client').PrismaClient;
+    }
+}
+else {
+    PrismaClientClass = require('@prisma/client').PrismaClient;
+}
+const prisma = new PrismaClientClass();
 async function main() {
-    console.log('Seeding initial data...');
+    console.log(`Seeding initial data (${isTest ? 'SQLite test/temp database' : 'MSSQL database'})...`);
     const adminEmail = 'admin@dynamicdocs.com';
     const existingAdmin = await prisma.user.findUnique({
         where: { email: adminEmail },
@@ -55,6 +69,21 @@ async function main() {
             validation: { required: true },
         },
     ];
+    for (const field of defaultCustomFields) {
+        await prisma.customFieldDefinition.upsert({
+            where: { key: field.key },
+            update: {},
+            create: {
+                key: field.key,
+                label: field.label,
+                type: field.type,
+                inputMode: field.inputMode,
+                validation: field.validation ? JSON.stringify(field.validation) : null,
+                formatting: field.formatting ? JSON.stringify(field.formatting) : null,
+            },
+        });
+    }
+    console.log('Default custom fields seeded.');
     console.log('Seeding completed successfully.');
 }
 main()

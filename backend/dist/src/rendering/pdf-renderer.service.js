@@ -67,7 +67,7 @@ let PdfDocumentRenderer = PdfDocumentRenderer_1 = class PdfDocumentRenderer {
                     await this.renderBackground(pdfDoc, pdfPage, bgBuffer, pageWidth, pageHeight);
                 }
                 catch (error) {
-                    this.logger.warn(`Could not load background asset ${tplPage.background.assetId}: ${error.message}`);
+                    this.logger.warn(`Could not load background asset ${tplPage.background.assetId}: ${error?.message || error}`);
                 }
             }
             if (Array.isArray(tplPage.fields)) {
@@ -114,7 +114,7 @@ let PdfDocumentRenderer = PdfDocumentRenderer_1 = class PdfDocumentRenderer {
             }
         }
         catch (e) {
-            this.logger.warn(`Failed to render background image: ${e.message}`);
+            this.logger.warn(`Failed to render background image: ${e?.message || e}`);
         }
     }
     async renderField(pdfDoc, pdfPage, field, data, pageHeight, fonts) {
@@ -204,7 +204,7 @@ let PdfDocumentRenderer = PdfDocumentRenderer_1 = class PdfDocumentRenderer {
             }
         }
         catch (e) {
-            this.logger.warn(`Failed to render image field: ${e.message}`);
+            this.logger.warn(`Failed to render image field: ${e?.message || e}`);
         }
     }
     selectFont(style, fonts) {

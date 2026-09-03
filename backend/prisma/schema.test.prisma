@@ -1,0 +1,156 @@
+generator client {
+provider = "prisma-client-js"
+output   = "../src/generated/prisma-test"
+}
+
+datasource db {
+provider = "sqlite"
+url      = "file:./tmp/test.db"
+}
+
+model User {
+id           String @id @default(uuid())
+name         String
+email        String @unique
+passwordHash String @map("password_hash")
+
+role String @default("ADMIN")
+
+createdAt DateTime @default(now()) @map("created_at")
+updatedAt DateTime @updatedAt @map("updated_at")
+
+documents Document[]
+
+@@map("users")
+}
+
+model Document {
+id                 String  @id @default(uuid())
+name               String
+description        String?
+status             String  @default("DRAFT")
+publicToken        String  @unique @map("public_token")
+publishedVersionId String? @map("published_version_id")
+accessMode         String  @default("PUBLIC") @map("access_mode")
+
+createdById String? @map("created_by_id")
+createdBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+createdAt DateTime  @default(now()) @map("created_at")
+updatedAt DateTime  @updatedAt @map("updated_at")
+deletedAt DateTime? @map("deleted_at")
+
+versions    DocumentVersion[]
+submissions Submission[]
+assets      Asset[]
+
+@@index([status])
+@@index([publicToken])
+@@index([deletedAt])
+@@map("documents")
+}
+
+model DocumentVersion {
+id String @id @default(uuid())
+
+documentId String   @map("document_id")
+document   Document @relation(fields: [documentId], references: [id])
+
+versionNumber Int    @map("version_number")
+status        String @default("DRAFT")
+
+template String
+
+createdAt   DateTime  @default(now()) @map("created_at")
+publishedAt DateTime? @map("published_at")
+
+pages       DocumentPage[]
+submissions Submission[]
+
+@@unique([documentId, versionNumber])
+@@index([documentId])
+@@index([status])
+@@map("document_versions")
+}
+
+model DocumentPage {
+id String @id @default(uuid())
+
+documentVersionId String          @map("document_version_id")
+documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id])
+
+pageNumber Int
+width      Float
+height     Float
+
+backgroundAssetId String? @map("background_asset_id")
+backgroundAsset   Asset?  @relation(fields: [backgroundAssetId], references: [id])
+
+createdAt DateTime @default(now()) @map("created_at")
+
+@@index([documentVersionId])
+@@map("document_pages")
+}
+
+model CustomFieldDefinition {
+id String @id @default(uuid())
+
+key        String  @unique
+label      String
+type       String  @default("TEXT")
+inputMode  String  @default("INTEGRATION") @map("input_mode")
+validation String?
+formatting String?
+
+createdAt DateTime @default(now()) @map("created_at")
+updatedAt DateTime @updatedAt @map("updated_at")
+
+@@index([key])
+@@map("custom_field_definitions")
+}
+
+model Asset {
+id String @id @default(uuid())
+
+storageKey   String @map("storage_key")
+originalName String @map("original_name")
+mimeType     String @map("mime_type")
+size         Int
+url          String?
+
+documentId String?   @map("document_id")
+document   Document? @relation(fields: [documentId], references: [id])
+
+createdAt DateTime @default(now()) @map("created_at")
+
+pages                DocumentPage[]
+generatedSubmissions Submission[]
+
+@@map("assets")
+}
+
+model Submission {
+id String @id @default(uuid())
+
+documentId String   @map("document_id")
+document   Document @relation(fields: [documentId], references: [id])
+
+documentVersionId String          @map("document_version_id")
+documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id])
+
+data String
+
+status String @default("SUBMITTED")
+
+generatedAssetId String? @map("generated_asset_id")
+generatedAsset   Asset?  @relation(fields: [generatedAssetId], references: [id])
+
+createdAt DateTime @default(now()) @map("created_at")
+updatedAt DateTime @updatedAt @map("updated_at")
+
+@@index([documentId])
+@@index([documentVersionId])
+@@index([createdAt])
+@@index([status])
+@@map("submissions")
+}

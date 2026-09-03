@@ -18,9 +18,9 @@ export declare class SubmissionsController {
             id: string;
             createdAt: Date;
             updatedAt: Date;
-            data: string;
             documentId: string;
             status: string;
+            data: string;
             documentVersionId: string;
             generatedAssetId: string | null;
         })[];
@@ -56,9 +56,9 @@ export declare class SubmissionsController {
         id: string;
         createdAt: Date;
         updatedAt: Date;
-        data: string;
         documentId: string;
         status: string;
+        data: string;
         documentVersionId: string;
         generatedAssetId: string | null;
     }>;

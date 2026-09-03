@@ -21,11 +21,11 @@ export declare class DocumentsService {
                 publishedAt: Date;
             }[];
         } & {
+            description: string | null;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
-            description: string | null;
             status: string;
             publicToken: string;
             publishedVersionId: string | null;

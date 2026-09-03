@@ -6,11 +6,11 @@ export declare class DocumentsController {
     private readonly documentsService;
     constructor(documentsService: DocumentsService);
     create(createDto: CreateDocumentDto, userId: string): Promise<{
+        description: string | null;
         id: string;
         name: string;
         createdAt: Date;
         updatedAt: Date;
-        description: string | null;
         status: string;
         publicToken: string;
         publishedVersionId: string | null;
@@ -28,11 +28,11 @@ export declare class DocumentsController {
                 publishedAt: Date;
             }[];
         } & {
+            description: string | null;
             id: string;
             name: string;
             createdAt: Date;
             updatedAt: Date;
-            description: string | null;
             status: string;
             publicToken: string;
             publishedVersionId: string | null;
@@ -48,11 +48,11 @@ export declare class DocumentsController {
         };
     }>;
     findById(id: string): Promise<{
+        description: string | null;
         id: string;
         name: string;
         createdAt: Date;
         updatedAt: Date;
-        description: string | null;
         status: string;
         publicToken: string;
         publishedVersionId: string | null;
@@ -61,11 +61,11 @@ export declare class DocumentsController {
         deletedAt: Date | null;
     }>;
     update(id: string, updateDto: UpdateDocumentDto): Promise<{
+        description: string | null;
         id: string;
         name: string;
         createdAt: Date;
         updatedAt: Date;
-        description: string | null;
         status: string;
         publicToken: string;
         publishedVersionId: string | null;

@@ -91,9 +91,9 @@ export class PdfDocumentRenderer implements DocumentRenderer {
             tplPage.background.assetId,
           );
           await this.renderBackground(pdfDoc, pdfPage, bgBuffer, pageWidth, pageHeight);
-        } catch (error) {
+        } catch (error: any) {
           this.logger.warn(
-            `Could not load background asset ${tplPage.background.assetId}: ${error.message}`,
+            `Could not load background asset ${tplPage.background.assetId}: ${error?.message || error}`,
           );
         }
       }
@@ -157,8 +157,8 @@ export class PdfDocumentRenderer implements DocumentRenderer {
           height: pageHeight,
         });
       }
-    } catch (e) {
-      this.logger.warn(`Failed to render background image: ${e.message}`);
+    } catch (e: any) {
+      this.logger.warn(`Failed to render background image: ${e?.message || e}`);
     }
   }
 
@@ -278,8 +278,8 @@ export class PdfDocumentRenderer implements DocumentRenderer {
           });
         }
       }
-    } catch (e) {
-      this.logger.warn(`Failed to render image field: ${e.message}`);
+    } catch (e: any) {
+      this.logger.warn(`Failed to render image field: ${e?.message || e}`);
     }
   }
 

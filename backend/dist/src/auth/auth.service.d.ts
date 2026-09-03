@@ -9,8 +9,8 @@ export declare class AuthService {
     constructor(prisma: PrismaService, jwtService: JwtService);
     login(loginDto: LoginDto): Promise<AuthResponseDto>;
     getProfile(userId: string): Promise<{
-        id: string;
         email: string;
+        id: string;
         name: string;
         role: string;
         createdAt: Date;

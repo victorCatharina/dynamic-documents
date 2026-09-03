@@ -4,7 +4,9 @@ exports.default = () => ({
     nodeEnv: process.env.NODE_ENV || 'development',
     port: parseInt(process.env.PORT || '3000', 10),
     databaseUrl: process.env.DATABASE_URL ||
-        'sqlserver://localhost:1433;database=sandbox;user=victor;password=mVc3@281210;trustServerCertificate=true',
+        (process.env.USE_TEST_DB === 'true' || process.env.DATABASE_PROVIDER === 'sqlite'
+            ? 'file:./prisma/tmp/test.db'
+            : 'sqlserver://localhost:1433;database=sandbox;user=victor;password=mVc3@281210;trustServerCertificate=true'),
     jwtSecret: process.env.JWT_SECRET || 'dynamic-documents-secret-key-change-in-production-min-32-chars',
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || '1d',
     storage: {

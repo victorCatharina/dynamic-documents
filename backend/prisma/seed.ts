@@ -1,10 +1,25 @@
-import { PrismaClient } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 
-const prisma = new PrismaClient();
+const isTest =
+  process.argv.includes('--schema=prisma/schema.test.prisma') ||
+  process.env.USE_TEST_DB === 'true' ||
+  process.env.NODE_ENV === 'test';
+
+let PrismaClientClass: any;
+if (isTest) {
+  try {
+    PrismaClientClass = require('../src/generated/prisma-test').PrismaClient;
+  } catch {
+    PrismaClientClass = require('@prisma/client').PrismaClient;
+  }
+} else {
+  PrismaClientClass = require('@prisma/client').PrismaClient;
+}
+
+const prisma = new PrismaClientClass();
 
 async function main() {
-  console.log('Seeding initial data...');
+  console.log(`Seeding initial data (${isTest ? 'SQLite test/temp database' : 'MSSQL database'})...`);
 
   const adminEmail = 'admin@dynamicdocs.com';
   const existingAdmin = await prisma.user.findUnique({
@@ -31,33 +46,49 @@ async function main() {
     {
       key: 'nomePaciente',
       label: 'Nome do Paciente',
-      type: 'TEXT' as const,
-      inputMode: 'INTEGRATION' as const,
+      type: 'TEXT',
+      inputMode: 'INTEGRATION',
       validation: { required: true, minLength: 3, maxLength: 120 },
     },
     {
       key: 'numeroContrato',
       label: 'Número do Contrato',
-      type: 'TEXT' as const,
-      inputMode: 'INTEGRATION' as const,
+      type: 'TEXT',
+      inputMode: 'INTEGRATION',
       validation: { required: true },
     },
     {
       key: 'cpfCliente',
       label: 'CPF do Cliente',
-      type: 'TEXT' as const,
-      inputMode: 'MANUAL' as const,
+      type: 'TEXT',
+      inputMode: 'MANUAL',
       validation: { required: true },
       formatting: { mask: '000.000.000-00' },
     },
     {
       key: 'dataAtendimento',
       label: 'Data do Atendimento',
-      type: 'DATE' as const,
-      inputMode: 'MANUAL' as const,
+      type: 'DATE',
+      inputMode: 'MANUAL',
       validation: { required: true },
     },
   ];
+
+  for (const field of defaultCustomFields) {
+    await prisma.customFieldDefinition.upsert({
+      where: { key: field.key },
+      update: {},
+      create: {
+        key: field.key,
+        label: field.label,
+        type: field.type,
+        inputMode: field.inputMode,
+        validation: field.validation ? JSON.stringify(field.validation) : null,
+        formatting: field.formatting ? JSON.stringify(field.formatting) : null,
+      },
+    });
+  }
+  console.log('Default custom fields seeded.');
 
   console.log('Seeding completed successfully.');
 }
