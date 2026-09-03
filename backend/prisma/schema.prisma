@@ -1,0 +1,155 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String @id @default(uuid()) @db.UniqueIdentifier
+  name         String @db.NVarChar(255)
+  email        String @unique @db.NVarChar(320)
+  passwordHash String @map("password_hash") @db.NVarChar(255)
+
+  role String @default("ADMIN") @db.VarChar(20)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  documents Document[]
+
+  @@map("users")
+}
+
+model Document {
+  id                 String  @id @default(uuid()) @db.UniqueIdentifier
+  name               String  @db.NVarChar(255)
+  description        String? @db.NVarChar(Max)
+  status             String  @default("DRAFT") @db.VarChar(20)
+  publicToken        String  @unique @map("public_token") @db.VarChar(255)
+  publishedVersionId String? @map("published_version_id") @db.UniqueIdentifier
+  accessMode         String  @default("PUBLIC") @map("access_mode") @db.VarChar(20)
+
+  createdById String? @map("created_by_id") @db.UniqueIdentifier
+  createdBy   User?   @relation(fields: [createdById], references: [id], onDelete: SetNull, onUpdate: NoAction)
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  versions    DocumentVersion[]
+  submissions Submission[]
+  assets      Asset[]
+
+  @@index([status])
+  @@index([publicToken])
+  @@index([deletedAt])
+  @@map("documents")
+}
+
+model DocumentVersion {
+  id String @id @default(uuid()) @db.UniqueIdentifier
+
+  documentId String   @map("document_id") @db.UniqueIdentifier
+  document   Document @relation(fields: [documentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  versionNumber Int    @map("version_number")
+  status        String @default("DRAFT") @db.VarChar(20)
+
+  template String @db.NVarChar(Max)
+
+  createdAt   DateTime  @default(now()) @map("created_at")
+  publishedAt DateTime? @map("published_at")
+
+  pages       DocumentPage[]
+  submissions Submission[]
+
+  @@unique([documentId, versionNumber])
+  @@index([documentId])
+  @@index([status])
+  @@map("document_versions")
+}
+
+model DocumentPage {
+  id String @id @default(uuid()) @db.UniqueIdentifier
+
+  documentVersionId String          @map("document_version_id") @db.UniqueIdentifier
+  documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  pageNumber Int   @map("page_number")
+  width      Float
+  height     Float
+
+  backgroundAssetId String? @map("background_asset_id") @db.UniqueIdentifier
+  backgroundAsset   Asset?  @relation(fields: [backgroundAssetId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([documentVersionId])
+  @@map("document_pages")
+}
+
+model CustomFieldDefinition {
+  id String @id @default(uuid()) @db.UniqueIdentifier
+
+  key         String  @unique @db.NVarChar(255)
+  label       String  @db.NVarChar(255)
+  type        String  @default("TEXT") @db.VarChar(50)
+  inputMode   String  @default("INTEGRATION") @map("input_mode") @db.VarChar(50)
+  validation  String? @db.NVarChar(Max)
+  formatting  String? @db.NVarChar(Max)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([key])
+  @@map("custom_field_definitions")
+}
+
+model Asset {
+  id String @id @default(uuid()) @db.UniqueIdentifier
+
+  storageKey   String  @map("storage_key") @db.NVarChar(1000)
+  originalName String  @map("original_name") @db.NVarChar(255)
+  mimeType     String  @map("mime_type") @db.VarChar(255)
+  size         Int
+  url          String? @db.NVarChar(2000)
+
+  documentId String?   @map("document_id") @db.UniqueIdentifier
+  document   Document? @relation(fields: [documentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  pages                DocumentPage[]
+  generatedSubmissions Submission[]
+
+  @@map("assets")
+}
+
+model Submission {
+  id String @id @default(uuid()) @db.UniqueIdentifier
+
+  documentId String   @map("document_id") @db.UniqueIdentifier
+  document   Document @relation(fields: [documentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  documentVersionId String          @map("document_version_id") @db.UniqueIdentifier
+  documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  data String @db.NVarChar(Max)
+
+  status String @default("SUBMITTED") @db.VarChar(20)
+
+  generatedAssetId String? @map("generated_asset_id") @db.UniqueIdentifier
+  generatedAsset   Asset?  @relation(fields: [generatedAssetId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([documentId])
+  @@index([documentVersionId])
+  @@index([createdAt])
+  @@index([status])
+  @@map("submissions")
+}

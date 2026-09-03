@@ -1,0 +1,31 @@
+{
+  "name": "portal-documentos-dinamicos",
+  "version": "1.0.0",
+  "description": "Plataforma de Documentos Dinâmicos - Modular Monolith NestJS Backend & Frontend Studio",
+  "scripts": {
+    "dev:backend": "cd backend && npm run start:dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "test": "cd backend && npm test",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "seed": "cd backend && npm run prisma:seed",
+    "postinstall": "prisma skills sync || exit 0"
+  },
+  "keywords": [
+    "dynamic-documents",
+    "nestjs",
+    "prisma",
+    "pdf-engine",
+    "drag-and-drop-builder"
+  ],
+  "author": "Dynamic Documents Team",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/adapter-mssql": "^7.10.0",
+    "@prisma/client": "^7.10.0",
+    "prisma": "^8.0.0-rc.12"
+  }
+}
