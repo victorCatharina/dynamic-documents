@@ -1,0 +1,155 @@
+@use '@angular/material' as mat;
+@use './styles/variables' as *;
+
+// Material 3 Core Theme Setup
+html {
+  @include mat.theme((
+    color: mat.$azure-palette,
+    typography: Inter,
+    density: 0
+  ));
+}
+
+// Global Reset & Base
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: $font-sans;
+  background-color: #f8fafc;
+  color: #1e293b;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-heading;
+  font-weight: 600;
+  color: #0f172a;
+  margin-top: 0;
+}
+
+// Scrollbars
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+  
+  &:hover {
+    background: #94a3b8;
+  }
+}
+
+// Utility Classes
+.font-mono {
+  font-family: $font-mono;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &.badge-draft {
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+  }
+
+  &.badge-published {
+    background-color: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+  }
+
+  &.badge-archived {
+    background-color: #fff1f2;
+    color: #be123c;
+    border: 1px solid #fecdd3;
+  }
+
+  &.badge-integration {
+    background-color: #f5f3ff;
+    color: #6d28d9;
+    border: 1px solid #ddd6fe;
+  }
+
+  &.badge-manual {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+    border: 1px solid #bfdbfe;
+  }
+}
+
+// Modern Card Styling
+.app-card {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.07);
+  }
+}
+
+// Canvas & Builder Global Handles
+.cdk-drag-preview {
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+  opacity: 0.9;
+  border-radius: 4px;
+  z-index: 1000 !important;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.3;
+}
+
+.cdk-drag-animating {
+  transition: transform 150ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+// SnackBar Custom Styling
+.app-snackbar-success {
+  --mdc-snackbar-container-color: #065f46;
+  --mat-snack-bar-button-color: #ffffff;
+  color: #ffffff;
+}
+
+.app-snackbar-error {
+  --mdc-snackbar-container-color: #991b1b;
+  --mat-snack-bar-button-color: #ffffff;
+  color: #ffffff;
+}
+
+.app-snackbar-warning {
+  --mdc-snackbar-container-color: #92400e;
+  --mat-snack-bar-button-color: #ffffff;
+  color: #ffffff;
+}
+
+.app-snackbar-info {
+  --mdc-snackbar-container-color: #1e40af;
+  --mat-snack-bar-button-color: #ffffff;
+  color: #ffffff;
+}

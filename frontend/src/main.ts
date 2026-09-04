@@ -1,6 +1,5 @@
-import './styles/index.css';
-import { initRouter } from './router';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { appConfig } from './app/app.config';
+import { App } from './app/app';
 
-document.addEventListener('DOMContentLoaded', () => {
-  initRouter();
-});
+bootstrapApplication(App, appConfig).catch((err) => console.error(err));
